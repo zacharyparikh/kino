@@ -1,7 +1,9 @@
 <script lang="ts">
-  export let name: string;
+  export let title: string;
+  export let posterUrl: string;
 </script>
 
 <div>
-  <p>{name}</p>
+  <p>{title}</p>
+  <img src={posterUrl} alt="{title} poster" />
 </div>

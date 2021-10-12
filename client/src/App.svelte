@@ -1,22 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import MovieTile from './components/MovieTile.svelte';
-  import { TMDB_API_KEY } from './api';
+  import type { Images } from './types/Images';
+  import Movies from './components/Movies.svelte';
 
-  export let name: string;
-
-  let movies;
-  onMount(() => {
-    console.log(TMDB_API_KEY);
+  let imagesConfig: Images;
+  onMount(async () => {
+    const results = await fetch('http://localhost:4000/imagesConfig');
+    imagesConfig = await results.json();
   });
 </script>
 
 <main>
-  <h1>Hello {name}!</h1>
-  <p>
-    Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
-    how to build Svelte apps.
-  </p>
+  <h1>Kino</h1>
+  {#if imagesConfig}
+    <Movies {imagesConfig} />
+  {/if}
 </main>
 
 <style>
