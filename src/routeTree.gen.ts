@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as WatchlistImport } from './routes/watchlist.tsx'
 
 // Create Virtual Routes
 
@@ -25,6 +26,11 @@ const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy.tsx').then((d) => d.Route))
+
+const WatchlistRoute = WatchlistImport.update({
+  path: '/watchlist',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/watchlist.lazy.tsx').then((d) => d.Route))
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -39,6 +45,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/watchlist': {
+      preLoaderRoute: typeof WatchlistImport
+      parentRoute: typeof rootRoute
+    }
     '/about': {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
@@ -48,6 +58,10 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexLazyRoute, AboutLazyRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexLazyRoute,
+  WatchlistRoute,
+  AboutLazyRoute,
+])
 
 /* prettier-ignore-end */
