@@ -1,47 +1,64 @@
 import * as stylex from "@stylexjs/stylex";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
-import React, { Suspense } from "react";
-
-const TanStackRouterDevtools =
-  process.env.NODE_ENV === "production"
-    ? () => null // Render nothing in production
-    : React.lazy(() =>
-        // Lazy load in development
-        import("@tanstack/router-devtools").then((res) => ({
-          default: res.TanStackRouterDevtools,
-          // For Embedded Mode
-          // default: res.TanStackRouterDevtoolsPanel
-        })),
-      );
+import { Suspense } from "react";
+import { tokens } from "../tokens.stylex";
+import { SearchBar } from "./-components/SearchBar";
+import { TanStackRouterDevtools } from "./-utils/TanStackRouterDevtools";
 
 const styles = stylex.create({
-  links: {
-    display: "flex",
-    padding: "0.5em",
-    gap: "0.5em",
+  root: {
+    fontFamily: "'Open Sans', sans-serif",
+    fontOpticalSizing: "auto",
+    fontStyle: "normal",
+    fontVariationSettings: "'wdth' 100",
+
+    color: tokens.onSurface,
+    backgroundColor: tokens.surface,
+
+    height: "100vh",
+    width: "100vw",
   },
 
-  activeLink: {
-    fontWeight: 700,
+  container: { padding: "0.5em 1em" },
+
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
+  links: { display: "flex", padding: "0.5em", gap: "1em" },
+  activeLink: { fontWeight: 700 },
 });
 
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <div {...stylex.props(styles.links)}>
-        <Link to="/" activeProps={{ ...stylex.props(styles.activeLink) }}>
-          Home
-        </Link>{" "}
-        <Link to="/about" activeProps={{ ...stylex.props(styles.activeLink) }}>
-          About
-        </Link>
+export const Route = createRootRoute({ component: Root });
+
+function Root() {
+  return (
+    <div {...stylex.props(styles.root)}>
+      <div {...stylex.props(styles.container)}>
+        <div {...stylex.props(styles.header)}>
+          <h1>Kino</h1>
+
+          <SearchBar />
+
+          <div {...stylex.props(styles.links)}>
+            <Link to="/" activeProps={{ ...stylex.props(styles.activeLink) }}>
+              Home
+            </Link>
+            <Link
+              to="/watchlist"
+              activeProps={{ ...stylex.props(styles.activeLink) }}
+            >
+              Watchlist
+            </Link>
+          </div>
+        </div>
+        <Outlet />
       </div>
-      <hr />
-      <Outlet />
+
       <Suspense>
         <TanStackRouterDevtools initialIsOpen={false} />
       </Suspense>
-    </>
-  ),
-});
+    </div>
+  );
+}
