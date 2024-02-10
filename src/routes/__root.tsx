@@ -1,3 +1,4 @@
+import * as stylex from "@stylexjs/stylex";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import React, { Suspense } from "react";
 
@@ -13,14 +14,26 @@ const TanStackRouterDevtools =
         })),
       );
 
+const styles = stylex.create({
+  links: {
+    display: "flex",
+    padding: "0.5em",
+    gap: "0.5em",
+  },
+
+  activeLink: {
+    fontWeight: 700,
+  },
+});
+
 export const Route = createRootRoute({
   component: () => (
     <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
+      <div {...stylex.props(styles.links)}>
+        <Link to="/" activeProps={{ ...stylex.props(styles.activeLink) }}>
           Home
         </Link>{" "}
-        <Link to="/about" className="[&.active]:font-bold">
+        <Link to="/about" activeProps={{ ...stylex.props(styles.activeLink) }}>
           About
         </Link>
       </div>
