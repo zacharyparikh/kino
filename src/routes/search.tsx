@@ -1,13 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import * as stylex from "@stylexjs/stylex";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { fetchSearch } from "./-loaders/fetchSearch";
 
 export const Route = createFileRoute("/search")({
   component: Search,
-  validateSearch: (search: Record<string, unknown>): { query: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { query: string; page: number } => ({
     query: (search.query as string) || "",
+    page: Number(search?.page ?? 1),
   }),
-  loaderDeps: ({ search: { query } }) => ({ query }),
-  loader: ({ deps: { query } }) => fetchSearch(query),
+  loaderDeps: ({ search: { query, page } }) => ({ query, page }),
+  loader: ({ deps: { query, page } }) => fetchSearch(query, page),
 });
 
 type Result = {
@@ -24,24 +28,50 @@ type Result = {
 
 const getReleaseYear = (releaseDate: string) => releaseDate.split("-")[0];
 
+const styles = stylex.create({
+  links: { display: "flex", gap: "1em" },
+});
+
 function Search() {
   const searchData = Route.useLoaderData();
+  const { page } = Route.useSearch();
   const results: Result[] = searchData?.results ?? [];
   results.sort((a, b) => b.popularity - a.popularity);
-
-  console.log({ results });
 
   return (
     <div>
       <ul>
-        {results.map(({ id, title, release_date }) => {
+        {results.map(({ id, title, release_date: releaseDate }) => {
           return (
             <li key={id}>
-              {title} {release_date && `(${getReleaseYear(release_date)})`}
+              {title} {releaseDate && `(${getReleaseYear(releaseDate)})`}
             </li>
           );
         })}
       </ul>
+
+      <div {...stylex.props(styles.links)}>
+        <Link
+          disabled={page === 1}
+          from={Route.fullPath}
+          search={(prev) => ({
+            ...prev,
+            page: prev.page - 1,
+          })}
+        >
+          Previous
+        </Link>
+
+        <Link
+          from={Route.fullPath}
+          search={(prev) => ({
+            ...prev,
+            page: prev.page + 1,
+          })}
+        >
+          Next
+        </Link>
+      </div>
     </div>
   );
 }

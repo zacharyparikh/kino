@@ -1,8 +1,10 @@
 import { baseUrl } from "./baseUrl";
 
-export async function fetchSearch(query: string) {
+export async function fetchSearch(query: string, page: number) {
   const url = new URL("search/movies", baseUrl);
-  url.searchParams.set("query", query);
+  const searchParams = new URLSearchParams({ query, page: String(page) });
+  url.search = "?" + searchParams;
+
   const response = await fetch(url);
   return response.json();
 }

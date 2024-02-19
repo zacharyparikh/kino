@@ -44,7 +44,7 @@ export function SearchBar() {
       name="searchbar"
       onSubmit={(event) => {
         event.preventDefault();
-        navigate({ to: "/search", search: { query: value } });
+        navigate({ to: "/search", search: { query: value, page: 1 } });
       }}
     >
       <input
