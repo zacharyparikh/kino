@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { fetchSearch } from "./-loaders/fetchSearch";
+import { fetchSearch } from "../-loaders/fetchSearch";
 
 export const Route = createFileRoute("/search")({
   component: Search,
@@ -29,6 +29,16 @@ type Result = {
 const getReleaseYear = (releaseDate: string) => releaseDate.split("-")[0];
 
 const styles = stylex.create({
+  root: { display: "grid", placeItems: "center" },
+  results: {
+    listStyle: "none",
+    padding: 0,
+  },
+  result: {
+    padding: "2em 0",
+    display: "flex",
+    gap: "0.5em",
+  },
   links: { display: "flex", gap: "1em" },
 });
 
@@ -39,8 +49,8 @@ function Search() {
   results.sort((a, b) => b.popularity - a.popularity);
 
   return (
-    <div>
-      <ul>
+    <div {...stylex.props(styles.root)}>
+      <ol {...stylex.props(styles.results)}>
         {results.map(({ id, title, release_date: releaseDate }) => {
           return (
             <li key={id}>
@@ -48,7 +58,7 @@ function Search() {
             </li>
           );
         })}
-      </ul>
+      </ol>
 
       <div {...stylex.props(styles.links)}>
         <Link

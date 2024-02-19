@@ -13,8 +13,8 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SearchImport } from './routes/search'
 import { Route as WatchlistRouteImport } from './routes/watchlist/route'
+import { Route as SearchRouteImport } from './routes/search/route'
 import { Route as WatchlistMovieIdImport } from './routes/watchlist/$movieId'
 import { Route as MovieMovieIdImport } from './routes/movie.$movieId'
 
@@ -24,17 +24,17 @@ const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
-const SearchRoute = SearchImport.update({
-  path: '/search',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const WatchlistRouteRoute = WatchlistRouteImport.update({
   path: '/watchlist',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/watchlist/route.lazy').then((d) => d.Route),
 )
+
+const SearchRouteRoute = SearchRouteImport.update({
+  path: '/search',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -59,12 +59,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/watchlist': {
-      preLoaderRoute: typeof WatchlistRouteImport
+    '/search': {
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRoute
     }
-    '/search': {
-      preLoaderRoute: typeof SearchImport
+    '/watchlist': {
+      preLoaderRoute: typeof WatchlistRouteImport
       parentRoute: typeof rootRoute
     }
     '/movie/$movieId': {
@@ -82,8 +82,8 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
+  SearchRouteRoute,
   WatchlistRouteRoute.addChildren([WatchlistMovieIdRoute]),
-  SearchRoute,
   MovieMovieIdRoute,
 ])
 
