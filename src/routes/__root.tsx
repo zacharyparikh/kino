@@ -1,3 +1,7 @@
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import * as stylex from "@stylexjs/stylex";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { Suspense } from "react";
@@ -7,24 +11,36 @@ import { TanStackRouterDevtools } from "./-utils/TanStackRouterDevtools";
 
 const styles = stylex.create({
   root: {
-    fontFamily: "'Open Sans', sans-serif",
-    fontOpticalSizing: "auto",
-    fontStyle: "normal",
-    fontVariationSettings: "'wdth' 100",
+    fontFamily: "Roboto",
 
     color: tokens.onSurface,
     backgroundColor: tokens.surface,
 
-    height: "100vh",
+    minHeight: "100vh",
     width: "100vw",
+
+    display: "flex",
+    flexDirection: "column",
   },
 
-  container: { padding: "0.5em 1em" },
+  container: {
+    padding: "0.5em 1em 1em",
+    minHeight: "auto",
+    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  outlet: {
+    flexGrow: 1,
+    display: "grid",
+  },
 
   header: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    margin: "0 5em",
   },
   links: { display: "flex", padding: "0.5em", gap: "1em" },
   activeLink: { fontWeight: 700 },
@@ -45,6 +61,7 @@ function Root() {
             <Link to="/" activeProps={{ ...stylex.props(styles.activeLink) }}>
               Home
             </Link>
+
             <Link
               to="/watchlist"
               activeProps={{ ...stylex.props(styles.activeLink) }}
@@ -53,7 +70,10 @@ function Root() {
             </Link>
           </div>
         </div>
-        <Outlet />
+
+        <div {...stylex.props(styles.outlet)}>
+          <Outlet />
+        </div>
       </div>
 
       <Suspense>

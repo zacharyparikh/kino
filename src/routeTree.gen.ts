@@ -13,7 +13,10 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as WatchlistImport } from './routes/watchlist.tsx'
+import { Route as SearchImport } from './routes/search'
+import { Route as WatchlistRouteImport } from './routes/watchlist/route'
+import { Route as WatchlistMovieIdImport } from './routes/watchlist/$movieId'
+import { Route as MovieMovieIdImport } from './routes/movie.$movieId'
 
 // Create Virtual Routes
 
@@ -21,15 +24,32 @@ const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
-const WatchlistRoute = WatchlistImport.update({
+const SearchRoute = SearchImport.update({
+  path: '/search',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const WatchlistRouteRoute = WatchlistRouteImport.update({
   path: '/watchlist',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/watchlist.lazy.tsx').then((d) => d.Route))
+} as any).lazy(() =>
+  import('./routes/watchlist/route.lazy').then((d) => d.Route),
+)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy.tsx').then((d) => d.Route))
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const WatchlistMovieIdRoute = WatchlistMovieIdImport.update({
+  path: '/$movieId',
+  getParentRoute: () => WatchlistRouteRoute,
+} as any)
+
+const MovieMovieIdRoute = MovieMovieIdImport.update({
+  path: '/movie/$movieId',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -40,14 +60,31 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof rootRoute
     }
     '/watchlist': {
-      preLoaderRoute: typeof WatchlistImport
+      preLoaderRoute: typeof WatchlistRouteImport
       parentRoute: typeof rootRoute
+    }
+    '/search': {
+      preLoaderRoute: typeof SearchImport
+      parentRoute: typeof rootRoute
+    }
+    '/movie/$movieId': {
+      preLoaderRoute: typeof MovieMovieIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/watchlist/$movieId': {
+      preLoaderRoute: typeof WatchlistMovieIdImport
+      parentRoute: typeof WatchlistRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexLazyRoute, WatchlistRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexLazyRoute,
+  WatchlistRouteRoute.addChildren([WatchlistMovieIdRoute]),
+  SearchRoute,
+  MovieMovieIdRoute,
+])
 
 /* prettier-ignore-end */
