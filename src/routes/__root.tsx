@@ -37,10 +37,10 @@ const styles = stylex.create({
   },
 
   header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: "0 5em",
+    display: "grid",
+    gridAutoColumns: "1fr",
+    gridAutoFlow: "column",
+    placeItems: "center",
   },
   links: { display: "flex", padding: "0.5em", gap: "1em" },
   activeLink: { fontWeight: 700 },

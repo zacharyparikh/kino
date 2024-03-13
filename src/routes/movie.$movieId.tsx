@@ -1,6 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import { createFileRoute } from "@tanstack/react-router";
 import { fetchMovie } from "./-loaders/fetchMovie";
+import { imageSizes, imagesBaseUrl } from "./-utils/images";
 
 export const Route = createFileRoute("/movie/$movieId")({
   loader: ({ params }) => fetchMovie(params.movieId),
@@ -43,7 +44,9 @@ function Movie() {
   return (
     <div {...stylex.props(styles.root)}>
       <div {...stylex.props(styles.backdrop)}>
-        <img src={`https://image.tmdb.org/t/p/w1280${backdropPath}`} />
+        <img
+          src={`${imagesBaseUrl}${imageSizes.backdrop.large}${backdropPath}`}
+        />
         <span {...stylex.props(styles.title)}>{movieData.title}</span>
       </div>
       <div {...stylex.props(styles.container)}></div>
