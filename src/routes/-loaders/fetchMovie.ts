@@ -1,13 +1,12 @@
-import { baseUrl } from "../-utils/baseUrl";
+import { z } from "zod";
+import { api } from "../-utils/api";
 
-interface Movie {
-  title: string;
-  backdrop_path: string;
-}
+const movieSchema = z.object({
+  title: z.string(),
+  backdrop_path: z.string(),
+});
 
 export async function fetchMovie(movieId: string) {
-  const url = new URL("movie", baseUrl);
-  url.searchParams.set("id", movieId);
-  const response = await fetch(url);
-  return (await response.json()) as Movie | null;
+  const response = await api.get("movie", { params: { id: movieId } });
+  return movieSchema.parse(response.data);
 }
