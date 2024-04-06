@@ -1,37 +1,7 @@
 import SearchIcon from "@mui/icons-material/Search";
 import { IconButton } from "@mui/material";
-import * as stylex from "@stylexjs/stylex";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { tokens } from "../../tokens.stylex";
-
-const styles = stylex.create({
-  root: {
-    display: "flex",
-    alignItems: "center",
-    gap: "1em",
-    backgroundColor: tokens.secondaryContainer,
-    color: tokens.onSecondaryContainer,
-
-    borderRadius: 100,
-    width: 550,
-    height: 40,
-
-    padding: "0 2em",
-  },
-
-  input: {
-    borderStyle: "none",
-    backgroundColor: "inherit",
-    flexGrow: 1,
-    height: "100%",
-    outline: {
-      ":focus": "none",
-    },
-    padding: 0,
-    color: "inherit",
-  },
-});
 
 export function SearchBar() {
   const navigate = useNavigate();
@@ -40,7 +10,7 @@ export function SearchBar() {
 
   return (
     <form
-      {...stylex.props(styles.root)}
+      className="bg-secondary-container dark:bg-secondary-container-dark text-on-secondary-container dark:text-on-secondary-container-dark col-span-2 flex h-10 w-full items-center gap-4 justify-self-center rounded-full px-8"
       name="searchbar"
       onSubmit={(event) => {
         event.preventDefault();
@@ -48,7 +18,7 @@ export function SearchBar() {
       }}
     >
       <input
-        {...stylex.props(styles.input)}
+        className="h-full flex-grow border-none bg-inherit outline-none"
         type="search"
         id="searchbar"
         placeholder="Search"

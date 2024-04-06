@@ -1,4 +1,4 @@
-export type Result = {
+export interface Result {
   id: number;
   media_type: "movie" | "person";
   overview: string;
@@ -8,4 +8,4 @@ export type Result = {
   popularity: number;
   vote_average: number;
   vote_count: number;
-};
+}

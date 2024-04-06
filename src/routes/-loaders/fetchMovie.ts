@@ -1,4 +1,4 @@
-import { baseUrl } from "./baseUrl";
+import { baseUrl } from "../-utils/baseUrl";
 
 export async function fetchMovie(movieId: string) {
   const url = new URL("movie", baseUrl);
