@@ -10,11 +10,11 @@ export function SearchBar() {
 
   return (
     <form
-      className="bg-secondary-container dark:bg-secondary-container-dark text-on-secondary-container dark:text-on-secondary-container-dark col-span-2 flex h-10 w-full items-center gap-4 justify-self-center rounded-full px-8"
+      className="col-span-2 flex h-10 w-full items-center gap-4 justify-self-center rounded-full bg-secondary-container px-8 text-on-secondary-container dark:bg-secondary-container-dark dark:text-on-secondary-container-dark"
       name="searchbar"
       onSubmit={(event) => {
         event.preventDefault();
-        navigate({ to: "/search", search: { query: value, page: 1 } });
+        void navigate({ to: "/search", search: { query: value, page: 1 } });
       }}
     >
       <input
