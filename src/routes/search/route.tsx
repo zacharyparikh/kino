@@ -1,7 +1,24 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { fetchSearch } from "./-loaders/fetchSearch";
 import { ResultItem } from "./-components/ResultItem";
-import type { Result } from "./-types/result";
+import { resultSchema, type Result } from "./-types/result";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { z } from "zod";
+import { api } from "../-utils/api";
+
+const searchSchema = z.object({
+  results: z.array(resultSchema),
+});
+
+const searchOptions = ({ query, page }: { query: string; page: number }) =>
+  queryOptions({
+    queryKey: ["search"],
+    async queryFn() {
+      const response = await api.get("search/movies", {
+        params: { query, page: String(page) },
+      });
+      return searchSchema.parse(response.data);
+    },
+  });
 
 export const Route = createFileRoute("/search")({
   component: Search,
@@ -12,13 +29,15 @@ export const Route = createFileRoute("/search")({
     page: Number(search.page ?? 1),
   }),
   loaderDeps: ({ search: { query, page } }) => ({ query, page }),
-  loader: ({ deps: { query, page } }) => fetchSearch(query, page),
+  loader: ({ deps, context: { queryClient } }) =>
+    queryClient.ensureQueryData(searchOptions(deps)),
 });
 
 function Search() {
-  const searchData = Route.useLoaderData();
+  const deps = Route.useLoaderDeps();
+  const searchQuery = useSuspenseQuery(searchOptions(deps));
   const { page } = Route.useSearch();
-  const results: Result[] = searchData?.results ?? [];
+  const results: Result[] = searchQuery.data.results;
   results.sort((a, b) => b.popularity - a.popularity);
 
   return (

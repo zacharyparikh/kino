@@ -1,18 +1,17 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { api } from "../-utils/api";
 import { z } from "zod";
 
 const watchlistSchema = z.array(z.string());
 
-async function fetchWatchlist() {
-  const response = await api.get("watchlist");
-  return watchlistSchema.parse(response.data);
-}
-
 const watchlistQueryOptions = queryOptions({
   queryKey: ["watchlist"],
-  queryFn: fetchWatchlist,
+
+  async queryFn() {
+    const response = await api.get("watchlist");
+    return watchlistSchema.parse(response.data);
+  },
 });
 
 export const Route = createFileRoute("/")({
@@ -22,11 +21,15 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const watchlistQuery = useSuspenseQuery(watchlistQueryOptions);
+
   return (
     <main>
       <h1>Your Watchlist</h1>
       <ul>
-        <li>Portrait of a Lady on Fire</li>
+        {watchlistQuery.data.map((id) => (
+          <li key={id}>{id}</li>
+        ))}
       </ul>
     </main>
   );
