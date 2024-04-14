@@ -1,18 +1,7 @@
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { api } from "../-utils/api";
-import { z } from "zod";
-
-const watchlistSchema = z.array(z.string());
-
-const watchlistQueryOptions = queryOptions({
-  queryKey: ["watchlist"],
-
-  async queryFn() {
-    const response = await api.get("watchlist");
-    return watchlistSchema.parse(response.data);
-  },
-});
+import { watchlistQueryOptions } from "../-queryOptions/watchlist";
+import { Movie } from "./-components/Movie";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -22,13 +11,14 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const watchlistQuery = useSuspenseQuery(watchlistQueryOptions);
+  const movieIds = Array.from(watchlistQuery.data.keys());
 
   return (
     <main>
       <h1>Your Watchlist</h1>
       <ul>
-        {watchlistQuery.data.map((id) => (
-          <li key={id}>{id}</li>
+        {movieIds.map((id) => (
+          <Movie key={id} id={id} />
         ))}
       </ul>
     </main>

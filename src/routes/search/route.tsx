@@ -1,17 +1,22 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ResultItem } from "./-components/ResultItem";
-import { resultSchema, type Result } from "./-types/result";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { MovieItem } from "../-components/MovieItem";
+import { movieSchema, type Movie } from "./-types/movie";
+import {
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { z } from "zod";
 import { api } from "../-utils/api";
+import { watchlistQueryOptions } from "../-queryOptions/watchlist";
 
 const searchSchema = z.object({
-  results: z.array(resultSchema),
+  results: z.array(movieSchema),
 });
 
 const searchOptions = ({ query, page }: { query: string; page: number }) =>
   queryOptions({
-    queryKey: ["search"],
+    queryKey: ["search", query, page],
     async queryFn() {
       const response = await api.get("search/movies", {
         params: { query, page: String(page) },
@@ -36,15 +41,19 @@ export const Route = createFileRoute("/search")({
 function Search() {
   const deps = Route.useLoaderDeps();
   const searchQuery = useSuspenseQuery(searchOptions(deps));
+  const watchlistQuery = useQuery(watchlistQueryOptions);
   const { page } = Route.useSearch();
-  const results: Result[] = searchQuery.data.results;
+  const results: Movie[] = searchQuery.data.results;
   results.sort((a, b) => b.popularity - a.popularity);
+
+  const isInWatchlist = (movieId: number) =>
+    watchlistQuery.data?.has(String(movieId));
 
   return (
     <div className="grid place-items-center">
-      <ol>
+      <ol className="max-w-[1000px]">
         {results.map((r) => (
-          <ResultItem key={r.id} {...r} />
+          <MovieItem key={r.id} movie={r} inWatchlist={isInWatchlist(r.id)} />
         ))}
       </ol>
 

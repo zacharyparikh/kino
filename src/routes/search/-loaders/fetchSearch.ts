@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { resultSchema } from "../-types/result";
+import { movieSchema } from "../-types/movie";
 import { api } from "../../-utils/api";
 
 const searchSchema = z.object({
-  results: z.array(resultSchema),
+  results: z.array(movieSchema),
 });
 
 export async function fetchSearch(query: string, page: number) {
