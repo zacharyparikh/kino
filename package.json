@@ -11,16 +11,28 @@
     "start": "vite"
   },
   "devDependencies": {
+    "@playwright/test": "1.48.2",
     "@tanstack/router-plugin": "^1.76.0",
+    "@types/node": "22.8.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "vite": "^5.4.10"
   },
   "dependencies": {
+    "@emotion/react": "11.13.3",
+    "@emotion/styled": "11.13.0",
+    "@fontsource/roboto": "5.1.0",
+    "@mui/icons-material": "6.1.5",
+    "@mui/material": "6.1.5",
     "@tanstack/react-router": "^1.76.1",
     "@tanstack/router-devtools": "^1.76.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zod": "3.23.8"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   }
 }
